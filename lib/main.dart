@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'services/database_service.dart';
+import 'services/router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,17 +18,13 @@ class PaperTrailApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'PaperTrail',
       debugShowCheckedModeBanner: false,
+      routerConfig: appRouter,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF4A90D9)),
         useMaterial3: true,
-      ),
-      home: const Scaffold(
-        body: Center(
-          child: Text('PaperTrail'),
-        ),
       ),
     );
   }

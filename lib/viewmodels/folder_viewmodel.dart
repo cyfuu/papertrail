@@ -2,7 +2,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import '../models/folder.dart';
 import '../repositories/folder_repository.dart';
-import '../services/database_service.dart';
 import '../services/providers.dart';
 
 // Repository provider
