@@ -5,6 +5,7 @@ import '../../models/note.dart';
 import 'widgets/note_type_sheet.dart';
 import 'widgets/create_note_dialog.dart';
 import 'widgets/note_card.dart';
+import 'widgets/note_options_sheet.dart';
 
 class FolderScreen extends ConsumerWidget {
   final String folderId;
@@ -42,7 +43,7 @@ class FolderScreen extends ConsumerWidget {
         error: (e, _) => Center(child: Text('Error: $e')),
         data: (notes) => notes.isEmpty
             ? _buildEmptyState(context)
-            : _buildNoteList(notes),
+            : _buildNoteList(notes, ref),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _onAddNote(context, ref),
@@ -114,7 +115,7 @@ class FolderScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildNoteList(List<Note> notes) {
+  Widget _buildNoteList(List<Note> notes, WidgetRef ref) {
     return ListView.builder(
       padding: const EdgeInsets.fromLTRB(20, 8, 20, 100),
       itemCount: notes.length,
@@ -125,9 +126,7 @@ class FolderScreen extends ConsumerWidget {
           onTap: () {
             // Task 32/36/43 — navigate to note editor
           },
-          onLongPress: () {
-            // Task 16/17 — note options sheet (rename, move, archive)
-          },
+          onLongPress: () => showNoteOptions(context, ref, note),
         );
       },
     );

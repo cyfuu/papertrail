@@ -6,7 +6,7 @@ import '../../models/folder.dart';
 import 'widgets/folder_card.dart';
 import 'widgets/home_empty_state.dart';
 import 'widgets/create_folder_dialog.dart';
-import 'widgets/folder_options.dart';
+import 'widgets/folder_options_sheet.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
