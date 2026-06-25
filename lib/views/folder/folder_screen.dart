@@ -4,6 +4,7 @@ import '../../viewmodels/note_viewmodel.dart';
 import '../../models/note.dart';
 import 'widgets/note_type_sheet.dart';
 import 'widgets/create_note_dialog.dart';
+import 'widgets/note_card.dart';
 
 class FolderScreen extends ConsumerWidget {
   final String folderId;
@@ -119,60 +120,16 @@ class FolderScreen extends ConsumerWidget {
       itemCount: notes.length,
       itemBuilder: (context, index) {
         final note = notes[index];
-        return _NotePlaceholderCard(note: note);
+        return NoteCard(
+          note: note,
+          onTap: () {
+            // Task 32/36/43 — navigate to note editor
+          },
+          onLongPress: () {
+            // Task 16/17 — note options sheet (rename, move, archive)
+          },
+        );
       },
     );
-  }
-}
-
-// Temporary placeholder — replaced in Task 15
-class _NotePlaceholderCard extends StatelessWidget {
-  final Note note;
-
-  const _NotePlaceholderCard({required this.note});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFE2E3DF)),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            _iconForType(note.type),
-            color: const Color(0xFF163328),
-            size: 20,
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              note.title,
-              style: const TextStyle(
-                fontFamily: 'Manrope',
-                fontWeight: FontWeight.w600,
-                fontSize: 15,
-                color: Color(0xFF163328),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  IconData _iconForType(NoteType type) {
-    switch (type) {
-      case NoteType.normal:
-        return Icons.edit_note_rounded;
-      case NoteType.todo:
-        return Icons.checklist_rounded;
-      case NoteType.code:
-        return Icons.code_rounded;
-    }
   }
 }
