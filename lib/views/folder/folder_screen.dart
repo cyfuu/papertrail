@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../viewmodels/note_viewmodel.dart';
 import '../../models/note.dart';
 import 'widgets/note_type_sheet.dart';
@@ -124,7 +125,11 @@ class FolderScreen extends ConsumerWidget {
         return NoteCard(
           note: note,
           onTap: () {
-            // Task 32/36/43 — navigate to note editor
+            if (note.type == NoteType.normal) {
+              context.push(
+                '/note/normal/${note.id}?title=${Uri.encodeComponent(note.title)}',
+              );
+            }
           },
           onLongPress: () => showNoteOptions(context, ref, note),
         );
