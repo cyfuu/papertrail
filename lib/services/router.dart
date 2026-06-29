@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 import '../views/home/home_screen.dart';
 import '../views/folder/folder_screen.dart';
 import '../views/note/normal_note_screen.dart';
+import '../views/note/todo_note_screen.dart';
 import '../views/archive/archive_screen.dart';
 
 final appRouter = GoRouter(
@@ -25,6 +26,14 @@ final appRouter = GoRouter(
         final noteId = state.pathParameters['noteId']!;
         final noteTitle = state.uri.queryParameters['title'] ?? 'Note';
         return NormalNoteScreen(noteId: noteId, noteTitle: noteTitle);
+      },
+    ),
+    GoRoute(
+      path: '/note/todo/:noteId',
+      builder: (context, state) {
+        final noteId = state.pathParameters['noteId']!;
+        final noteTitle = state.uri.queryParameters['title'] ?? 'To-Do';
+        return TodoNoteScreen(noteId: noteId, noteTitle: noteTitle);
       },
     ),
     GoRoute(

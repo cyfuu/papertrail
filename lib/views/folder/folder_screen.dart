@@ -129,6 +129,10 @@ class FolderScreen extends ConsumerWidget {
               context.push(
                 '/note/normal/${note.id}?title=${Uri.encodeComponent(note.title)}',
               );
+            } else if (note.type == NoteType.todo) {
+              context.push(
+                '/note/todo/${note.id}?title=${Uri.encodeComponent(note.title)}',
+              );
             }
           },
           onLongPress: () => showNoteOptions(context, ref, note),
