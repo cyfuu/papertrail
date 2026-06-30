@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../viewmodels/auth_viewmodel.dart';
+import '../../utils/validators.dart';
 
 class AuthScreen extends ConsumerStatefulWidget {
   const AuthScreen({super.key});
@@ -10,12 +11,14 @@ class AuthScreen extends ConsumerStatefulWidget {
 }
 
 class _AuthScreenState extends ConsumerState<AuthScreen> {
+  final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isSignUp = false;
 
   @override
   void dispose() {
+    _usernameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -24,11 +27,35 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
   Future<void> _submit() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
-    if (email.isEmpty || password.isEmpty) return;
+    final username = _usernameController.text.trim();
+
+    if (!Validators.isValidEmail(email)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter a valid email address'),
+          backgroundColor: Color(0xFFBA1A1A),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    if (password.isEmpty) return;
+
+    if (_isSignUp && !Validators.isValidUsername(username)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Username must contain at least 5 characters'),
+          backgroundColor: Color(0xFFBA1A1A),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
 
     final viewModel = ref.read(authViewModelProvider.notifier);
     if (_isSignUp) {
-      await viewModel.signUp(email, password);
+      await viewModel.signUp(email, password, username);
     } else {
       await viewModel.signIn(email, password);
     }
@@ -84,7 +111,14 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                 ),
               ),
               const SizedBox(height: 32),
-
+              if (_isSignUp) ...[
+                TextField(
+                  controller: _usernameController,
+                  style: const TextStyle(color: Color(0xFF163328)),
+                  decoration: _inputDecoration('Username'),
+                ),
+                const SizedBox(height: 14),
+              ],
               TextField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
@@ -127,7 +161,10 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
 
               Center(
                 child: TextButton(
-                  onPressed: () => setState(() => _isSignUp = !_isSignUp),
+                  onPressed: () {
+                    if (_isSignUp) _usernameController.clear();
+                    setState(() => _isSignUp = !_isSignUp);
+                  },
                   child: Text(
                     _isSignUp
                         ? 'Already have an account? Sign In'

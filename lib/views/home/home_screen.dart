@@ -15,6 +15,9 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final foldersAsync = ref.watch(folderViewModelProvider);
+    
+    final user = ref.watch(authRepositoryProvider).currentUser;
+    final username = user?.userMetadata?['username'] ?? 'Explorer';
 
     return Scaffold(
       backgroundColor: const Color(0xFFFAF9F6),
@@ -47,7 +50,7 @@ class HomeScreen extends ConsumerWidget {
         error: (e, _) => Center(child: Text('Error: $e')),
         data: (folders) => folders.isEmpty
             ? const HomeEmptyState()
-            : _buildGrid(context, ref, folders),
+            : _buildGrid(context, ref, folders, username),
       ),
       floatingActionButton: _buildFAB(context, ref),
     );
@@ -88,8 +91,9 @@ class HomeScreen extends ConsumerWidget {
       ),
     );
   }
+
   Widget _buildGrid(
-      BuildContext context, WidgetRef ref, List<Folder> folders) {
+      BuildContext context, WidgetRef ref, List<Folder> folders, String username) {
     return CustomScrollView(
       slivers: [
         SliverPadding(
@@ -98,6 +102,16 @@ class HomeScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Text(
+                  'Welcome back, $username!',
+                  style: const TextStyle(
+                    fontFamily: 'Manrope',
+                    fontWeight: FontWeight.w500,
+                    fontSize: 15,
+                    color: Color(0xFF727974),
+                  ),
+                ),
+                const SizedBox(height: 6),
                 const Text(
                   'Collections',
                   style: TextStyle(

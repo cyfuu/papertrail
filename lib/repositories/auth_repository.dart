@@ -7,8 +7,9 @@ class AuthRepository {
 
   Stream<AuthState> get authStateChanges => _client.auth.onAuthStateChange;
 
-  Future<void> signUp(String email, String password) async {
+  Future<void> signUp(String username, String email, String password) async {
     final response = await _client.auth.signUp(
+      data: {'username': username},
       email: email,
       password: password,
     );

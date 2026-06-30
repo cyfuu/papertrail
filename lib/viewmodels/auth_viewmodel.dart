@@ -20,9 +20,9 @@ class AuthViewModel extends AsyncNotifier<void> {
   @override
   Future<void> build() async {}
 
-  Future<void> signUp(String email, String password) async {
+  Future<void> signUp(String username, String email, String password) async {
     state = const AsyncValue.loading();
-    final result = await AsyncValue.guard(() => _repo.signUp(email, password));
+    final result = await AsyncValue.guard(() => _repo.signUp(username, email, password));
     if (result.hasError) {
       state = result;
     } else {
