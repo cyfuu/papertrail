@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../viewmodels/auth_viewmodel.dart';
 import '../../viewmodels/folder_viewmodel.dart';
 import '../../models/folder.dart';
 import 'widgets/folder_card.dart';
@@ -33,6 +34,13 @@ class HomeScreen extends ConsumerWidget {
           ),
         ),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout_rounded),
+            color: const Color(0xFF163328),
+            onPressed: () => _confirmLogout(context, ref),
+          ),
+        ],
       ),
       body: foldersAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
@@ -45,6 +53,41 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
+  void _confirmLogout(BuildContext context, WidgetRef ref) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xFFFAF9F6),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text(
+          'Sign Out',
+          style: TextStyle(
+            fontFamily: 'Manrope',
+            fontWeight: FontWeight.w700,
+            color: Color(0xFF163328),
+          ),
+        ),
+        content: const Text('Are you sure you want to sign out?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel', style: TextStyle(color: Color(0xFF727974))),
+          ),
+          FilledButton(
+            onPressed: () {
+              Navigator.pop(context);
+              ref.read(authViewModelProvider.notifier).signOut();
+            },
+            style: FilledButton.styleFrom(
+              backgroundColor: const Color(0xFFBA1A1A),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+            child: const Text('Sign Out'),
+          ),
+        ],
+      ),
+    );
+  }
   Widget _buildGrid(
       BuildContext context, WidgetRef ref, List<Folder> folders) {
     return CustomScrollView(

@@ -1,4 +1,7 @@
+import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../views/auth/auth_screen.dart';
 import '../views/home/home_screen.dart';
 import '../views/folder/folder_screen.dart';
 import '../views/note/normal_note_screen.dart';
@@ -7,7 +10,22 @@ import '../views/archive/archive_screen.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/',
+  refreshListenable: GoRouterRefreshStream(
+    Supabase.instance.client.auth.onAuthStateChange,
+  ),
+  redirect: (context, state) {
+    final isLoggedIn = Supabase.instance.client.auth.currentUser != null;
+    final isAuthRoute = state.matchedLocation == '/auth';
+
+    if (!isLoggedIn && !isAuthRoute) return '/auth';
+    if (isLoggedIn && isAuthRoute) return '/';
+    return null;
+  },
   routes: [
+    GoRoute(
+      path: '/auth',
+      builder: (context, state) => const AuthScreen(),
+    ),
     GoRoute(
       path: '/',
       builder: (context, state) => const HomeScreen(),
@@ -42,3 +60,21 @@ final appRouter = GoRouter(
     ),
   ],
 );
+
+// Helper to make GoRouter listen to Supabase auth changes
+class GoRouterRefreshStream extends ChangeNotifier {
+  GoRouterRefreshStream(Stream<dynamic> stream) {
+    notifyListeners();
+    _subscription = stream.asBroadcastStream().listen(
+      (_) => notifyListeners(),
+    );
+  }
+
+  late final dynamic _subscription;
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
+  }
+}
